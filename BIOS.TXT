@@ -1,0 +1,190 @@
+;Copyright (c) 1999-2000 Tatsuhiko Syoji, Japan 982-0221. All rights reserved.
+;
+;Redistribution and use in source and binary forms, with or without
+;modification, are permitted provided that the following conditions are
+;met:
+;
+;1 Redistributions of source code must retain the above copyright notice,
+; this list of conditions and the following disclaimer as the first lines
+; of this file unmodified.
+;
+;2 Redistributions in binary form must reproduce the above copyright
+;notice, this list of conditions and the following disclaimer in the
+;documentation and/or other materials provided with the distribution.
+;
+;THIS SOFTWARE IS PROVIDED BY Tatsuhiko Syoji ``AS IS'' AND ANY EXPRESS
+;ORIMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+; WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+; DISCLAIMED. IN NO EVENT SHALL Tatsuhiko Syoji BE LIABLE FOR ANY DIRECT,
+; INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+;(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+;SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+;HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+;STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+;IN
+; ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+MSX-C Library Backward Compatible Library MSX-BIOS Function Library
+By Tatsuhiko Syoji (Tatsu) 1999-2000
+
+[About this Library]
+This library is compatible with the BIOS library of the MSX-C Library.
+The source code is fully free and has been confirmed to be freely available.
+It implements all functions except for slot-related functions, which are difficult to implement and rarely used.
+
+[Configuration Files]
+* .ASM This is the source file for this library.
+BIOS .TXT This file.
+MSXBIOS.H This is the header file for this library.
+
+[Assembling]
+You can assemble this library source by running MKBLIB.BAT.
+The library file will be generated with the file name MLIB.IRL.
+
+The screen() function internally calls the iniplt() function of the MSX-Graphic function library, a backward-compatible library for the MSX-C Library. After this, you should either link the MSX-Graphic function library or link it after this library when starting the linker.
+
+All you need to do is copy MSXBIOS.H to the directory containing the header files and the library file to the directory containing the library.
+
+[Other]
+The rnd() function has an equivalent in SOLID C, so there are no plans to implement it.
+
+[Function Reference]
+void disscr(void);
+Disables screen display.
+
+void enascr(void);
+Enables screen display.
+
+void screen(char sc);
+Sets the screen mode to number sc.
+
+void gicini(void);
+Initializes the PSG.
+
+void sound(char reg, unsigned char val);
+Writes the value val to the PSG register number reg.
+
+unsigned char rdpsg(char reg);
+Reads the value of the PSG register reg.
+
+int chsns(void);
+Returns 0 if the keyboard buffer is empty, 1 otherwise.
+
+void chput(unsigned char ch);
+Displays the character with character code ch on the text screen.
+
+unsigned char chget(void);
+Enters one character from the keyboard and returns its value.
+
+unsigned char lptout(char ch);
+Outputs character code ch to the printer.
+Returns 0 if successful, 1 if unsuccessful.
+
+unsigned char lptstt(void);
+Returns 0 if the printer is ready, 1 if not.
+
+unsigned char *pinlin(void);
+Enters one line in the MSX-BASIC screen editor and returns a pointer to the entered string.
+
+unsigned char *inlin(void);
+Enters a line in the MSX-BASIC screen editor and returns a pointer to the entered string.
+Same as pinlin except that AUTFLG(F6AAH) is set.
+
+char breakx(void);
+Returns 1 if CTRL+STOP is pressed, 0 otherwise.
+
+void beep(void);
+Emits a beep.
+
+void cls(void);
+Clears the screen.
+
+void locate(char x,char y);
+Moves the cursor to (x,y).
+
+void erafnk(void);
+Erase the function key display.
+
+void dspfnk(void);
+Displays the function keys.
+
+char gtstck(char port);
+Returns the status of the joystick for port number using the BIOS.
+0: Cursor keys
+1: Port 1
+2: Port 2
+
+The returned value corresponds to the pressed direction as follows:
+0: Not pressed 1: Up 2: Upright 3: Right 4: Downright 5: Down 6: Downleft 7: Left 8: Upleft
+
+char gstex(char port);
+
+Directly manipulates the I/O port and returns the status of the joystick at port number.
+0: Cursor keys
+1: Port 1
+2: Port 2
+
+In addition to the values returned by gtstck, the following values have been added to the returned value and pressed direction correspondence:
+
+9: RUN button on FM-TOWNS joypad
+10: SELECT button on FM-TOWNS joypad
+
+This function does not exist in the MSX-C Library.
+Since it does not involve slot manipulation, it is expected to operate faster than gtstck.
+
+char gttrig(char no);
+
+Returns the status of the joystick at port number.
+
+If not pressed, it returns 0; if pressed, it returns -1.
+0: Cursor key
+1: Port 1 trigger A
+2: Port 2 trigger A
+3: Port 1 trigger B
+4: Port 2 trigger B
+
+char gtpad(char no);
+Calls the BIOS GTPAD(00DBH) to check the status of I/O device no.
+
+unsigned char gtpdl(char no);
+Checks the status of paddle no. and returns the rotation angle.
+
+char chgsnd(char stat);
+Changes the state of a 1-bit sound port.
+Status is 0 for off, 1 for on.
+
+unsigned char snsmat(char row);
+Returns the keyboard matrix state for row.
+
+void kilbuf(void);
+Clears the key buffer.
+
+void ei(void);
+Enables interrupts.
+
+void di(void);
+Disables interrupts.
+
+/* MSX Turbo R BIOS function */
+void chgcpu(char no);
+Switches the CPU mode to no.
+The lower two bits of no set the CPU mode, and bit 7 determines whether the LED state changes.
+This function does nothing on MSX2+ and earlier machines.
+
+The values of the lower two bits are as follows:
+0: Z80
+1: R800 ROM
+2: R800 DRAM
+
+This function does not exist in the MSX-C Library because MSX Turbo R was not available at the time the MSX-C Library was released.
+
+char getcpu(void);
+Checks the current CPU mode.
+The values have the following meanings:
+0: Z80
+1: R800 ROM
+2: R800 DRAM
+-1: Z80 mode on MSX2+ and earlier machines.
+
+This function does not exist in the MSX-C Library because MSX Turbo R was not available at the time the MSX-C Library was released.
+

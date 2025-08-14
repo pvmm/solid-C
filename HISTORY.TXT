@@ -1,0 +1,4 @@
+June 4, 2000, Tatsuhiko Syoji
+	First version completed
+July 22, 2000, Tatsuhiko Syoji
+	Added the calpat(), calatr(), sprite(), colspr(), and putspr() functions.

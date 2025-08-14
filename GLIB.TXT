@@ -1,0 +1,164 @@
+MSX-C Library Backward Compatible Library MSX-Graphic Function Library
+By Tatsuhiko Syoji (Tatsu) 1999-2000
+
+[About this Library]
+This library is compatible with the graphics library of the MSX-C Library.
+The source code is fully free and has been confirmed to be freely usable.
+It does not implement functions that are difficult to implement but rarely used.
+
+[Configuration Files]
+*.ASM This is the source file for this library.
+GLIB.TXT This file.
+GLIB.H This is the header file for this library.
+
+[Assemble]
+Execute MKGLIB.BAT to compile the source for this library.
+The library file will be generated with the file name MLIB.IRL.
+All you need to do is copy GLIB.H to the directory containing the header file and the library file to the directory containing the library.
+
+[Function Reference]
+void ginit(void);
+Initializes the graphics library.
+This function must be called once before using the following functions.
+
+void interlace(char mode);
+Sets whether the screen is in interlaced mode.
+The mode values are as follows:
+0: Non-interlaced
+1: Interlaced
+2: Non-interlaced, alternating odd and even pages
+3: Interlaced, composite odd and even pages
+When using 2 or 3, set the display page to odd pages.
+
+void setrd(unsigned addr);
+Sets the VDP to read mode, allowing reading from VRAM address addr using the I/O port.
+The actual reading is performed using the invdp() function.
+
+char invdp(void);
+Reads one byte from the VRAM at the address set by the setrd() function using the I/O port.
+After reading, the address counter is auto-incremented, so by calling this function repeatedly, you can read a continuous range of VRAM contents.
+
+void setwrt(unsigned addr);
+Puts the VDP into write mode, enabling writing from VRAM address addr using the I/O port.
+The actual writing is performed using the outvdp() function.
+
+void outvdp(unsigned char ch);
+Writes one byte of ch from the VRAM address set by the setwrt() function using the I/O port.
+After writing, the address counter auto-increments, so by calling this function repeatedly, you can write to a contiguous range of VRAM.
+
+unsigned char vpeek(unsigned int addr);
+Reads one byte from VRAM address addr.
+The next byte can be read using the invdp() function.
+
+void vpoke(unsigned int addr,unsigned char ch);
+Writes one byte of ch to VRAM address addr.
+The next byte can be written using the outvdp() function.
+
+void wrtvdp(char no,unsigned char val)
+Writes the value val to the VDP register no.
+To maintain compatibility with SOLID C's slib.irl, the same function can also be called using the function name vdp.
+
+unsigned char rdvdp(char no)
+Reads the value of the VDP's control register no.
+This function simply returns the value saved in the work area when writing to the VDP's control register.
+
+unsigned char rdvsts(char no)
+Reads the value of the VDP's status register no.
+To maintain compatibility with SOLID C's slib.irl, the same function can also be called using the function name vdpstat.
+
+void color(char fg,char bg,char bd);
+Sets the foreground color to fg, the background color to bg, and the border color to bd.
+The specified values are saved in c_fore, c_back, and c_border, respectively.
+
+void iniplt(void);
+Initializes the palette.
+Palette data is not saved to VRAM.
+
+void setplt(char no, unsigned int dat);
+Sets the palette for palette number no.
+The palette is set using dat.
+Bits 10-8 determine the green intensity, bits 7-4 the red intensity, and bits 3-0 the blue intensity.
+
+void inispr(char mode);
+Initializes the sprite in mode mode.
+The following modes are available:
+0: 8 * 8 (no scaling)
+1: 8 * 8 (scaling)
+2: 16 * 16 (no scaling)
+3: 16 * 16 (scaling)
+4: Disable sprite display (increases VDP command execution speed).
+
+unsigned int calpat(char num);
+Returns the address of the sprite generator table for num.
+
+unsigned int calatr(char plane);
+Returns the address of the sprite attribute table for sprite plane number plane.
+
+void sprite(char no, void *data);
+Specifies the sprite pattern number no with data.
+
+void colspr(char plane, void *data);
+Specifies the display color of the sprite displayed on plane number plane.
+Valid for Screen 4 and later.
+
+void putspr(char plane, int x, int y, char color, char pat);
+Displays the sprite with pattern number pat at coordinates (x, y) on plane number plane.
+For Screens 1-3, specify the display color with color.
+
+Sprite numbers used in sprite-related functions are not affected by sprite size, as in BIOS and MSX-BASIC.
+
+void totext(void);
+Returns the screen mode to the previous text screen. If you exit while in graphics mode, DOS character output will not appear on the screen, so be sure to call this function when exiting a program using graphics mode.
+
+void grpprt(char ch,char logop);
+Displays character ch on the graphics screen.
+For screen 5 and later, you can specify the logical operation with logop.
+
+void glocate(int x,int y);
+Use the grpprt() function to specify the coordinates at which to display the character.
+
+void setpg(char dp,char ap);
+For screen 5 and later, set the display page.
+Specify the display page number with dp, and the active page (the page on which drawing actually occurs) with ap.
+
+void fsetrd(char bit16,unsigned int bitf0);
+Unlike the setrd() function, this function ignores the setpg() function setting and sets the VDP to read mode, allowing reading via the I/O port.
+Addressing is specified using bit16 and bitf0, respectively. The actual reading is performed using the invdp() function.
+This function does not exist in the MSX-C Library.
+
+void fsetwt(char bit16,unsigned int bitf0);
+Unlike the setwrt() function, this ignores the setpg() function settings and sets the VDP to write mode, allowing writing via the I/O port.
+Addressing is specified using bit16 for bit16 and bit15-0 for bitf0.
+The actual reading is performed using the outvdp() function.
+This function does not exist in the MSX-C Library.
+
+void vdpcom(void *dat);
+The memory contents from dat onwards are treated as the contents of VDP registers #32-#46, and the VDP command is executed.
+This function does not exist in the MSX-C Library.
+This is most useful when the source size is fixed.
+
+;Copyright (c) 1999-2000 Tatsuhiko Syoji, Japan. All rights reserved.
+;
+;Redistribution and use in source and binary forms, with or without
+;modification, are permitted provided that the following conditions are
+;met:
+;
+;1 Redistributions of source code must retain the above copyright notice,
+; this list of conditions and the following disclaimer as the first lines
+; of this file unmodified.
+;
+;2 Redistributions in binary form must reproduce the above copyright
+;notice, this list of conditions and the following disclaimer in the
+;documentation and/or other materials provided with the distribution.
+;
+;THIS SOFTWARE IS PROVIDED BY Tatsuhiko Syoji ``AS IS'' AND ANY EXPRESS
+;ORIMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+; WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+; DISCLAIMED. IN NO EVENT SHALL Tatsuhiko Syoji BE LIABLE FOR ANY DIRECT,
+; INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+;(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+;SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+;HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+;STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+;IN
+; ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN I

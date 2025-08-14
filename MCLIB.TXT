@@ -1,0 +1,56 @@
+MSX-C Library Backward Compatible Library for SOLID C
+By Tatsuhiko Syoji (Tatsu) 1999-2000
+
+[About this Library]
+This library is a port of a portion of the MSX-C Library to SOLID C.
+The source code is original and unrestricted, so it may be freely used and distributed.
+
+[Library Development]
+The author himself has not used the curses library, and it is not considered suitable for MSX, so there are no plans to port it.
+Other functions with complex implementations, such as the numerical calculation library, have not been ported.
+However, for game development, which is the primary purpose of this library, the functions provided in this library should be sufficient.
+
+Other useful original functions have been integrated, such as CPU-related functions for the MSX Turbo R, which was released after the release of the MSX-C Library, functions for VDP commands, and a VRAM access function that allows all 17 bits to be set in the read/write address.
+
+[Required Environment]
+SOLID C Operating Environment
+
+[Configuration Files]
+GLIB.H: Graphics library header file.
+MSXBIOS.H: BIOS library header file.
+MLIB.IRL: Assembled object file for this library.
+
+BIOSSRC.LZH: BIOS library source file.
+GRPSRC.LZH: Graphics library source file.
+
+BIOS.TXT: BIOS library manual.
+GLIB.TXT: Graphics library manual.
+MCLIB.TXT: This text.
+LICENCE.TXT: License document.
+HISTORY.TXT: Revision history of this package.
+
+[Installation Instructions]
+Copy GLIB.H and MSXBIOS.H to the header file location in your SOLID C setup environment, and MLIB.IRL to the library file location.
+In your program, include the header file containing the functions used in the source file, and link MLIB.IRL with the linker.
+Note that to ensure source file compatibility with the MSX-C Library, including glib.h will also include msxbios.h.
+
+[License]
+This program and source code are subject to the BSD copyright.
+For details about the BSD copyright, see the included LICENCE.TXT file.
+A Japanese translation of the BSD copyright is available at the following URL:
+http://openlab.etl.go.jp/freesoft/BSD-j.htm
+
+[References]
+MSX FAN June 1995 Information Issue
+MSX Creator's Guidebook
+MSX2/2+ Quick Reference Dictionary
+
+[Author]
+Tatsuhiko Shoji (Tatsu)
+@nifty: RXK16664 ray-net: RAY113
+MTC-NET: MTC0067 K.Y-Network: KYN00115 NetComplex Net: NAT28347
+Official Email Address: rxk16664@nifty.ne.jp
+Private Email Address: tatsu_syo@geocities.co.jp
+My Homepage 1st: http://www.geocities.co.jp/SiliconValley/7512/
+My Homepage 2nd: http://member.nifty.ne.jp/Tatsu/
+------------------------------------------------------------------------
